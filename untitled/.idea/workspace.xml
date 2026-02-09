@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fd9ad649-a2dc-4070-a132-bf45b23e774f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/controller/JuegoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/model/Ficha.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/model/Jugador.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/model/Partida.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/model/Tablero.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/repositoy/IJugadorRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/repositoy/IPartidaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/repositoy/JugadorRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ucr/repositoy/PartidaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/untitled.iml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="39RJHV8Mumj3l1hIaQ2YTUcbkCW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "onboarding.tips.debug.path": "C:/desarrollo de sof/untitled/src/Main.java"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fd9ad649-a2dc-4070-a132-bf45b23e774f" name="Changes" comment="" />
+      <created>1770652864819</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770652864819</updated>
+    </task>
+    <servers />
+  </component>
+</project>
