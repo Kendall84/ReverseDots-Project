@@ -1,4 +1,4 @@
-package edu.ucr.repositoy;
+package edu.ucr.repository;
 
 import edu.ucr.model.Jugador;
 

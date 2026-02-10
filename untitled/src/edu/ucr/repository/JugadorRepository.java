@@ -1,11 +1,11 @@
-package edu.ucr.repositoy;
+package edu.ucr.repository;
 
 import edu.ucr.model.Jugador;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JugadorRepository implements IJugadorRepository {
+public class JugadorRepository implements edu.ucr.repository.IJugadorRepository {
 
 
     private List<Jugador> listajugadores = new ArrayList<>();

@@ -33,6 +33,11 @@ public class Tablero {
         celdas[mitad][mitad - 1] = Ficha.NEGRA;
 
     }
+    public boolean esPosicionValida(int fila, int columna) {
+        // Revisa que la fila y la columna no se salgan de la matriz
+        // El tamaño suele ser 8, así que revisa que esté entre 0 y 7
+        return fila >= 0 && fila < tamaño && columna >= 0 && columna < tamaño;
+    }
         // Para saber qué hay en una posición específica
         public Ficha getFicha(int fila, int columna) {
             return celdas[fila][columna];
