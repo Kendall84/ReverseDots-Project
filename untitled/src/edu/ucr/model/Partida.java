@@ -1,6 +1,10 @@
 package edu.ucr.model;
 
-public class Partida {
+import java.io.Serializable;
+
+public class Partida implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Tablero tablero;
     private Jugador jugadorNegro;

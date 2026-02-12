@@ -1,6 +1,10 @@
 package edu.ucr.model;
 
-public class Jugador {
+import java.io.Serializable;
+
+public class Jugador implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String nombre;
     private int partidasGanada;
@@ -25,5 +29,9 @@ public class Jugador {
     public void incrementarPerdidas() {
         this.partidasPerdida++;
     }
+
+    // GETTERS nuevos para estadísticas (lenguaje cotidiano): permiten leer cuántas partidas ganó/perdió
+    public int getPartidasGanadas() { return partidasGanada; }
+    public int getPartidasPerdidas() { return partidasPerdida; }
 
 }

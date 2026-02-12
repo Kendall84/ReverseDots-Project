@@ -14,10 +14,14 @@ public class VentanaJuego extends JFrame {
     private  JLabel conteoNegroLabel;
     private  JLabel conteoBlancoLabel;
 
+    // Nuevo: mantenemos el panel del tablero como campo para poder reconstruirlo cuando se inicia nueva partida
+    private JPanel panelTablero;
+
     public VentanaJuego(JuegoController controlador) {
         this.controlador = controlador;
-        this.botones = new JButton[8][8];
-
+        // Cambio: ahora creamos la matriz de botones según el tamaño del tablero que indique el controlador
+        int n = controlador.getTamañoTablero();
+        this.botones = new JButton[n][n];
 
         setTitle(" --Reversi - UCR-- ");
 
@@ -31,8 +35,8 @@ public class VentanaJuego extends JFrame {
         setJMenuBar(crearMenu());
 
         // Creamos el panel del tablero con GridLayout
-        JPanel panelTablero = new JPanel(new GridLayout(8, 8));
-        inicializarTableroGrafico(panelTablero);
+        panelTablero = new JPanel(new GridLayout(n, n));
+        inicializarTableroGrafico(panelTablero, n);
         add(panelTablero, BorderLayout.CENTER);
 
         //panel lateral con la infromacion del juego
@@ -52,16 +56,41 @@ public class VentanaJuego extends JFrame {
         JMenu menu = new JMenu("Juego");
 
 
-        JMenuItem nuevo = new JMenuItem("Nuevo partida");
-        nuevo.addActionListener(e -> JOptionPane.showMessageDialog(this, "nueva partida"));
+        JMenuItem nuevo = new JMenuItem("Nueva partida");
+        // Cambio: ahora abrimos un diálogo para pedir tamaño y nombres y crear la partida
+        nuevo.addActionListener(e -> abrirDialogoNuevaPartida());
 
         JMenuItem cargar = new JMenuItem("Cargar partida");
-        cargar.addActionListener(e -> JOptionPane.showMessageDialog(this, "cargar partida"));
+        // Cambio: abrimos un JFileChooser para seleccionar archivo y pedimos al controlador que lo cargue
+        cargar.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            int res = chooser.showOpenDialog(this);
+            if (res == JFileChooser.APPROVE_OPTION) {
+                String ruta = chooser.getSelectedFile().getAbsolutePath();
+                boolean ok = controlador.cargarPartidaDesdeArchivo(ruta);
+                if (ok) {
+                    reconstruirTableroUI();
+                    actualizarVista();
+                    JOptionPane.showMessageDialog(this, "Partida cargada correctamente.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo cargar la partida.");
+                }
+            }
+        });
 
         JMenuItem guardar = new JMenuItem("Guardar partida");
-        guardar.addActionListener(e -> JOptionPane.showMessageDialog(this, "guardar partida"));
+        // Cambio: abrimos JFileChooser para elegir donde guardar y pedimos al controlador guardar la partida
+        guardar.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            int res = chooser.showSaveDialog(this);
+            if (res == JFileChooser.APPROVE_OPTION) {
+                String ruta = chooser.getSelectedFile().getAbsolutePath();
+                controlador.guardarProgreso(ruta);
+                JOptionPane.showMessageDialog(this, "Partida guardada (si hubo éxito, se indicó en consola).");
+            }
+        });
 
-        JMenuItem jugadores = new JMenuItem("ver jugadores");
+        JMenuItem jugadores = new JMenuItem("Ver jugadores");
         jugadores.addActionListener(e -> JOptionPane.showMessageDialog(this, "estadisticas"));
 
         JMenuItem salir = new JMenuItem("Salir");
@@ -77,10 +106,69 @@ public class VentanaJuego extends JFrame {
         menu.add(jugadores);
         menu.addSeparator();
         menu.add(salir);
-        menu.add(menu);
+        menuBar.add(menu);
 
 
         return menuBar;
+    }
+
+    // Nuevo método: abre un diálogo para crear nueva partida
+    // En lenguaje cotidiano: le pregunta al usuario el tamaño del tablero y los nombres de los jugadores,
+    // valida lo básico y llama al controlador para iniciar la partida. Si todo OK, reconstruye la UI.
+    private void abrirDialogoNuevaPartida() {
+        try {
+            String tamañoStr = JOptionPane.showInputDialog(this, "Tamaño del tablero (ej. 8):", "8");
+            if (tamañoStr == null) return; // Usuario canceló
+            int tamaño = Integer.parseInt(tamañoStr.trim());
+            if (tamaño < 4 || tamaño % 2 != 0) {
+                JOptionPane.showMessageDialog(this, "El tamaño debe ser un número par mayor o igual a 4.");
+                return;
+            }
+
+            String nombreNegro = JOptionPane.showInputDialog(this, "Nombre jugador Negro:", "Negro");
+            if (nombreNegro == null) return;
+            nombreNegro = nombreNegro.trim();
+            if (nombreNegro.isEmpty()) nombreNegro = "Negro";
+
+            String nombreBlanco = JOptionPane.showInputDialog(this, "Nombre jugador Blanco:", "Blanco");
+            if (nombreBlanco == null) return;
+            nombreBlanco = nombreBlanco.trim();
+            if (nombreBlanco.isEmpty()) nombreBlanco = "Blanco";
+
+            // Llamamos al controlador para iniciar nueva partida
+            controlador.iniciarNuevaPartida(tamaño, nombreNegro, nombreBlanco);
+
+            // Reconstruimos la interfaz del tablero según el nuevo tamaño
+            reconstruirTableroUI();
+
+            // Actualizamos la vista completa (nombres y contadores)
+            actualizarVista();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Tamaño no válido. Debes ingresar un número.");
+        } catch (Exception ex) {
+            // Mensaje sencillo en lenguaje cotidiano
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al crear la partida: " + ex.getMessage());
+        }
+    }
+
+    // Reconstruye el panel del tablero y la matriz de botones cuando cambia el tamaño
+    private void reconstruirTableroUI() {
+        int n = controlador.getTamañoTablero();
+        // Creamos nuevas estructuras
+        this.botones = new JButton[n][n];
+
+        // Quitamos el panel antiguo y creamos uno nuevo
+        Container content = getContentPane();
+        content.remove(panelTablero);
+
+        panelTablero = new JPanel(new GridLayout(n, n));
+        inicializarTableroGrafico(panelTablero, n);
+        content.add(panelTablero, BorderLayout.CENTER);
+
+        // Forzamos revalidación y pintado
+        content.revalidate();
+        content.repaint();
     }
 
     private JPanel crearPanelLateral() {
@@ -88,11 +176,13 @@ public class VentanaJuego extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder("Estadisticas"));
 
-        // Por ahora ponemos nombres fijos, luego los sacas del controlador
-        jugadorNegroLabel = new JLabel("Jugador Negro: Negro");
-        jugadorBlancoLabel = new JLabel("Jugador Blanco: Blanco");
-        conteoNegroLabel = new JLabel("Fichas Negro: 0");
-        conteoBlancoLabel = new JLabel("Fichas Blanco: 0");
+        // Ahora usamos los nombres reales del controlador si existen
+        String nombreNegro = (controlador.getJugadorNegro() != null) ? controlador.getJugadorNegro().getNombre() : "Negro";
+        String nombreBlanco = (controlador.getJugadorBlanco() != null) ? controlador.getJugadorBlanco().getNombre() : "Blanco";
+        jugadorNegroLabel = new JLabel("Jugador Negro: " + nombreNegro);
+        jugadorBlancoLabel = new JLabel("Jugador Blanco: " + nombreBlanco);
+        conteoNegroLabel = new JLabel("Fichas Negro: " + controlador.getConteoNegro());
+        conteoBlancoLabel = new JLabel("Fichas Blanco: " + controlador.getConteoBlanco());
 
         panel.add(jugadorNegroLabel);
         panel.add(jugadorBlancoLabel);
@@ -112,12 +202,10 @@ public class VentanaJuego extends JFrame {
     }
 
 
-    private void inicializarTableroGrafico(JPanel panel) {
-        for (int fila = 0; fila < 8; fila++) {
-
-            for (int columna = 0; columna < 8; columna++) {
-
-
+    // Cambio: inicializarTableroGrafico ahora recibe 'n' para construir un tablero de tamaño dinámico
+    private void inicializarTableroGrafico(JPanel panel, int n) {
+        for (int fila = 0; fila < n; fila++) {
+            for (int columna = 0; columna < n; columna++) {
                 JButton boton = new JButton();
 
                 boton.setBackground(new Color(34, 139, 34)); // Color verde tipo tapete
@@ -127,13 +215,27 @@ public class VentanaJuego extends JFrame {
                 final int f = fila;
                 final int c = columna;
 
-                // Evento al hacer clic
+                // Evento al hacer clic: intentamos ejecutar el movimiento a través del controlador
                 boton.addActionListener(e -> {
-                    boolean exito = controlador.ejecutarMovimiento(f, c);
-                    if (exito) {
-                        actualizarVista();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Movimiento inválido");
+                    // Ahora el controlador devuelve un ResultadoOperacion para saber el motivo
+                    edu.ucr.controller.ResultadoOperacion res = controlador.ejecutarMovimiento(f, c);
+                    switch (res) {
+                        case SUCCESS:
+                            actualizarVista();
+                            break;
+                        case INVALID_POSITION:
+                            JOptionPane.showMessageDialog(this, "Posición inválida.");
+                            break;
+                        case CELL_NOT_EMPTY:
+                            JOptionPane.showMessageDialog(this, "La casilla ya tiene una ficha.");
+                            break;
+                        case INVALID_MOVE:
+                            JOptionPane.showMessageDialog(this, "Movimiento inválido: no captura fichas.");
+                            break;
+                        case ERROR:
+                        default:
+                            JOptionPane.showMessageDialog(this, "Ocurrió un error al intentar mover.");
+                            break;
                     }
                 });
 
@@ -144,21 +246,21 @@ public class VentanaJuego extends JFrame {
     }
 
     public void actualizarVista() {
+        // Ahora que el tamaño del tablero puede variar, pedimos el tamaño real al controlador
+        int n = controlador.getTamañoTablero();
         int conteoNegras = 0;
         int conteoBlancas = 0;
 
-
-        for (int f = 0; f < 8; f++) {
-            for (int c = 0; c < 8; c++) {
-                // Le pedimos al controlador el color de esa casilla
+        for (int f = 0; f < n; f++) {
+            for (int c = 0; c < n; c++) {
+                // Pedimos al controlador el color de esa casilla
                 String colorFicha = controlador.getColorEnPosicion(f, c);
 
-                if (colorFicha.equals("NEGRO")) {
+                if ("NEGRO".equals(colorFicha)) {
                     botones[f][c].setBackground(Color.BLACK);
-                    // Quitamos el texto para que solo se vea el color
                     botones[f][c].setText("");
                     conteoNegras++;
-                } else if (colorFicha.equals("BLANCO")) {
+                } else if ("BLANCO".equals(colorFicha)) {
                     botones[f][c].setBackground(Color.WHITE);
                     botones[f][c].setText("");
                     conteoBlancas++;
@@ -169,9 +271,17 @@ public class VentanaJuego extends JFrame {
                 }
             }
         }
-        // Opcional: Mostrar de quién es el turno en la consola por ahora
+
+        // Actualizamos labels usando los valores calculados y los getters del controlador
         conteoNegroLabel.setText("Fichas Negro: " + conteoNegras);
         conteoBlancoLabel.setText("Fichas Blanco: " + conteoBlancas);
+        // Mostramos el turno actual en texto sencillo (se puede mejorar luego)
         estadoLabel.setText("Turno actual: " + controlador.getTurnoActual());
+
+        // Actualizamos también los nombres en el panel lateral por si cambiaron
+        String nombreNegro = (controlador.getJugadorNegro() != null) ? controlador.getJugadorNegro().getNombre() : "Negro";
+        String nombreBlanco = (controlador.getJugadorBlanco() != null) ? controlador.getJugadorBlanco().getNombre() : "Blanco";
+        jugadorNegroLabel.setText("Jugador Negro: " + nombreNegro);
+        jugadorBlancoLabel.setText("Jugador Blanco: " + nombreBlanco);
     }
 }

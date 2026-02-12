@@ -1,6 +1,10 @@
 package edu.ucr.model;
 
-public class Tablero {
+import java.io.Serializable;
+
+public class Tablero implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Ficha[][] celdas;
     private int tamaño;
@@ -51,5 +55,3 @@ public class Tablero {
             return tamaño;
         }
     }
-
-
