@@ -23,6 +23,6 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             VentanaJuego ventana = new VentanaJuego(controlador);
             ventana.setVisible(true);
-        });
+        });//Holaaaaaaaaaaaaaaaaaaa
     }
 }
