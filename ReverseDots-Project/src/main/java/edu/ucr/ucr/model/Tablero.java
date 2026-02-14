@@ -46,7 +46,7 @@ public class Tablero implements Serializable {
         public Ficha getFicha(int fila, int columna) {
             return celdas[fila][columna];
         }
-        // Para poner o cambiar una ficha (por ejemplo, cuando se voltea una)
+        // Para poner o cambiar una ficha
         public void setFicha(int fila, int col, Ficha Ficha) {
             celdas[fila][col] = Ficha;
         }

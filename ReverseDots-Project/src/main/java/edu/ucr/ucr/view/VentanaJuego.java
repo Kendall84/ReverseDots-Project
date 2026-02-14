@@ -8,20 +8,22 @@ import java.awt.*;
 
 
 public class VentanaJuego extends JFrame {
-    private JuegoController controlador;
-    private JButton[][] botones; // Matriz de botones para representar el tablero
-    private JLabel estadoLabel;
-    private JLabel jugadorNegroLabel;
-    private  JLabel jugadorBlancoLabel;
-    private  JLabel conteoNegroLabel;
-    private  JLabel conteoBlancoLabel;
+     private JuegoController controlador;
+    // Iconos cacheados para no recrearlos en cada actualización
+    private static final Icon ICON_NEGRO = new DiscIcon("NEGRO");
+    private static final Icon ICON_BLANCO = new DiscIcon("BLANCO");
+     private JButton[][] botones; // Matriz de botones para representar el tablero
+     private JLabel estadoLabel;
+     private JLabel jugadorNegroLabel;
+     private  JLabel jugadorBlancoLabel;
+     private  JLabel conteoNegroLabel;
+     private  JLabel conteoBlancoLabel;
 
-    // Nuevo: mantenemos el panel del tablero como campo para poder reconstruirlo cuando se inicia nueva partida
     private JPanel panelTablero;
 
     public VentanaJuego(JuegoController controlador) {
         this.controlador = controlador;
-        // Cambio: ahora creamos la matriz de botones según el tamaño del tablero que indique el controlador
+        // ahora creamos la matriz de botones según el tamaño del tablero que indique el controlador
         int n = controlador.getTamañoTablero();
         this.botones = new JButton[n][n];
 
@@ -59,11 +61,11 @@ public class VentanaJuego extends JFrame {
 
 
         JMenuItem nuevo = new JMenuItem("Nueva partida");
-        // Cambio: ahora abrimos un diálogo para pedir tamaño y nombres y crear la partida
+        // TODO Cambio: ahora abrimos un diálogo para pedir tamaño y nombres y crear la partida
         nuevo.addActionListener(e -> abrirDialogoNuevaPartida());
 
         JMenuItem cargar = new JMenuItem("Cargar partida");
-        // Cambio: abrimos un JFileChooser para seleccionar archivo y pedimos al controlador que lo cargue
+        // abrimos un JFileChooser para seleccionar archivo y pedimos al controlador que lo cargue
         cargar.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             int res = chooser.showOpenDialog(this);
@@ -81,7 +83,7 @@ public class VentanaJuego extends JFrame {
         });
 
         JMenuItem guardar = new JMenuItem("Guardar partida");
-        // Cambio: abrimos JFileChooser para elegir donde guardar y pedimos al controlador guardar la partida
+        //abrimos JFileChooser para elegir donde guardar y pedimos al controlador guardar la partida
         guardar.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             int res = chooser.showSaveDialog(this);
@@ -115,8 +117,8 @@ public class VentanaJuego extends JFrame {
     }
 
     // Nuevo método: abre un diálogo para crear nueva partida
-    // En lenguaje cotidiano: le pregunta al usuario el tamaño del tablero y los nombres de los jugadores,
-    // valida lo básico y llama al controlador para iniciar la partida. Si todo OK, reconstruye la UI.
+    //le pregunta al usuario el tamaño del tablero y los nombres de los jugadores,
+    // valida lo básico y llama al controlador para iniciar la partida.
     private void abrirDialogoNuevaPartida() {
         try {
             String tamañoStr = JOptionPane.showInputDialog(this, "Tamaño del tablero (ej. 8):", "8");
@@ -204,15 +206,20 @@ public class VentanaJuego extends JFrame {
     }
 
 
-    // Cambio: inicializarTableroGrafico ahora recibe 'n' para construir un tablero de tamaño dinámico
+    // inicializarTableroGrafico ahora recibe 'n' para construir un tablero de tamaño dinámico
     private void inicializarTableroGrafico(JPanel panel, int n) {
         for (int fila = 0; fila < n; fila++) {
             for (int columna = 0; columna < n; columna++) {
+                // Creamos un botón que mostrará un icono personalizado con las fichas
                 JButton boton = new JButton();
 
-                boton.setBackground(new Color(34, 139, 34)); // Color verde tipo tapete
+                // Le damos un tamaño preferible para que se vea cuadrado
+                boton.setPreferredSize(new Dimension(60, 60));
 
-                boton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                // Volvemos a poner el fondo verde del "tapete" en la casilla
+                boton.setBackground(new Color(34, 139, 34)); // "tapete" verde
+                boton.setOpaque(true);
+                boton.setText("");
 
                 final int f = fila;
                 final int c = columna;
@@ -258,17 +265,22 @@ public class VentanaJuego extends JFrame {
                 // Pedimos al controlador el color de esa casilla
                 String colorFicha = controlador.getColorEnPosicion(f, c);
 
+                // Si hay ficha, ponemos el icono redondo correspondiente;
+                // si está vacío, dejamos sólo el fondo verde (sin icono)
                 if ("NEGRO".equals(colorFicha)) {
-                    botones[f][c].setBackground(Color.BLACK);
+                    botones[f][c].setIcon(ICON_NEGRO);
+                    botones[f][c].setBackground(new Color(25, 92, 13));
                     botones[f][c].setText("");
                     conteoNegras++;
                 } else if ("BLANCO".equals(colorFicha)) {
-                    botones[f][c].setBackground(Color.WHITE);
+                    botones[f][c].setIcon(ICON_BLANCO);
+                    botones[f][c].setBackground(new Color(25, 92, 13));
                     botones[f][c].setText("");
                     conteoBlancas++;
                 } else {
-                    // Si está vacío, volvemos al verde original
-                    botones[f][c].setBackground(new Color(34, 139, 34));
+                    // vacío: quitamos icono y dejamos el color verde del botón
+                    botones[f][c].setIcon(null);
+                    botones[f][c].setBackground(new Color(25, 92, 13));
                     botones[f][c].setText("");
                 }
             }
@@ -277,13 +289,69 @@ public class VentanaJuego extends JFrame {
         // Actualizamos labels usando los valores calculados y los getters del controlador
         conteoNegroLabel.setText("Fichas Negro: " + conteoNegras);
         conteoBlancoLabel.setText("Fichas Blanco: " + conteoBlancas);
-        // Mostramos el turno actual en texto sencillo (se puede mejorar luego)
-        estadoLabel.setText("Turno actual: " + controlador.getTurnoActual());
+        // Mostramos el turno en español usando el método getColor() del enum
+        // "Turno actual: NEGRO" o "Turno actual: BLANCO"
+        estadoLabel.setText("Turno actual: " + (controlador.getTurnoActual() != null ? controlador.getTurnoActual().getColor() : "VACIO"));
 
         // Actualizamos también los nombres en el panel lateral por si cambiaron
         String nombreNegro = (controlador.getJugadorNegro() != null) ? controlador.getJugadorNegro().getNombre() : "Negro";
         String nombreBlanco = (controlador.getJugadorBlanco() != null) ? controlador.getJugadorBlanco().getNombre() : "Blanco";
         jugadorNegroLabel.setText("Jugador Negro: " + nombreNegro);
         jugadorBlancoLabel.setText("Jugador Blanco: " + nombreBlanco);
+    }
+
+    // Clase interna para dibujar iconos de fichas directamente con Java2D
+    // "DiscIcon" dibuja: fondo verde tipo tapete y, según el estado, una ficha negra grande,
+    // una ficha blanca grande, o (estado VACIO) dos fichas pequeñas (negra y blanca) como muestra.
+    private static class DiscIcon implements Icon {
+        private final String tipo; // "NEGRO", "BLANCO" o "VACIO"
+        private final int size; // tamaño del icono (cuadrado)
+
+        public DiscIcon(String tipo) {
+            this.tipo = tipo;
+            this.size = 56; // un poco menos que el preferred size del botón
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            // Hacemos una copia del Graphics para no tocar el original
+            Graphics2D g2 = (Graphics2D) g.create();
+            try {
+                // Antialias para círculos suaves
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                if ("NEGRO".equals(tipo)) {
+                    // Ficha negra grande centrada
+                    drawCenteredDisc(g2, x, y, getIconWidth(), getIconHeight(), Color.BLACK);
+                } else if ("BLANCO".equals(tipo)) {
+                    // Ficha blanca grande centrada
+                    drawCenteredDisc(g2, x, y, getIconWidth(), getIconHeight(), Color.WHITE);
+                }
+            } finally {
+                g2.dispose();
+            }
+        }
+
+        // dibuja una ficha grande centrada dentro del rectángulo
+        private void drawCenteredDisc(Graphics2D g2, int x, int y, int w, int h, Color color) {
+            int diam = Math.min(w, h) * 3 / 4; // diámetro un poco menor que el icono
+            int cx = x + (w - diam) / 2;
+            int cy = y + (h - diam) / 2;
+            g2.setColor(color);
+            g2.fillOval(cx, cy, diam, diam);
+            // borde ligero para dar relieve (si es blanca, usar gris para que se vea)
+            g2.setColor(color == Color.WHITE ? Color.LIGHT_GRAY : Color.BLACK);
+            g2.drawOval(cx, cy, diam, diam);
+        }
+
+        @Override
+        public int getIconWidth() {
+            return size;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return size;
+        }
     }
 }

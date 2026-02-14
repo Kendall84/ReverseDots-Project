@@ -1,8 +1,8 @@
 package edu.ucr.ucr.controller;
-import edu.ucr.model.Ficha;
-import edu.ucr.model.Jugador;
-import edu.ucr.model.Partida;
-import edu.ucr.model.Tablero;
+import edu.ucr.ucr.model.Ficha;
+import edu.ucr.ucr.model.Jugador;
+import edu.ucr.ucr.model.Partida;
+import edu.ucr.ucr.model.Tablero;
 import edu.ucr.ucr.repository.IJugadorRepository;
 import edu.ucr.ucr.repository.IPartidaRepository;
 
@@ -14,7 +14,7 @@ public class JuegoController {
     private Jugador jugadorNegro;
     private Ficha turno;
     private IJugadorRepository jugadorRepository;
-    private IPartidaRepository partidaRepository; // Corregido el nombre para consistencia
+    private IPartidaRepository partidaRepository;
     private JPanel panelTablero;
 
 
@@ -26,16 +26,16 @@ public class JuegoController {
 
     // --- LÓGICA DE INICIO ---
 
-    public void iniciarNuevaPartida(int tamano, String nombreNegro, String nombreBlanco) {
-        this.tablero = new Tablero(tamano);
+    public void iniciarNuevaPartida(int tamaño, String nombreNegro, String nombreBlanco) {
+        this.tablero = new Tablero(tamaño);
 
         // Obtenemos o creamos los jugadores
         this.jugadorNegro = obtenerOCrearJugador(nombreNegro);
         this.jugadorBlanco = obtenerOCrearJugador(nombreBlanco);
 
-        // IMPORTANTE: Colocar las 4 fichas iniciales en el centro
-        int centro1 = (tamano / 2) - 1;
-        int centro2 = tamano / 2;
+        // las 4 fichas iniciales en el centro
+        int centro1 = (tamaño / 2) - 1;
+        int centro2 = tamaño / 2;
 
         tablero.setFicha(centro1, centro1, Ficha.BLANCA);
         tablero.setFicha(centro2, centro2, Ficha.BLANCA);
@@ -60,37 +60,36 @@ public class JuegoController {
 
     // --- LÓGICA DE MOVIMIENTO ---
 
-    //CAMBIO: ejecutarMovimiento ahora devuelve ResultadoOperacion para explicar el resultado
     public ResultadoOperacion ejecutarMovimiento(int fila, int columna) {
         try {
-            // 1) Validaciones básicas
-            if (tablero == null) return edu.ucr.controller.ResultadoOperacion.ERROR; // tablero no inicializado
+            //Validaciones
+            if (tablero == null) return ResultadoOperacion.ERROR; // tablero no inicializado
             if (!tablero.esPosicionValida(fila, columna)) {
-                return edu.ucr.controller.ResultadoOperacion.INVALID_POSITION;
+                return ResultadoOperacion.INVALID_POSITION;
             }
 
-            // 2) Casilla vacía?
-            edu.ucr.model.Ficha fichaActual = tablero.getFicha(fila, columna);
-            if (fichaActual != edu.ucr.model.Ficha.VACIA && fichaActual != null) {
-                return edu.ucr.controller.ResultadoOperacion.CELL_NOT_EMPTY;
+            //Casilla vacía?
+            Ficha fichaActual = tablero.getFicha(fila, columna);
+            if (fichaActual != null && fichaActual != Ficha.VACIA) {
+                return ResultadoOperacion.CELL_NOT_EMPTY;
             }
 
-            // 3) Movimiento válido (captura al menos en una dirección)?
+            //Movimiento válido (captura al menos en una dirección)?
             if (!esMovimientoValido(fila, columna)) {
-                return edu.ucr.controller.ResultadoOperacion.INVALID_MOVE;
+                return ResultadoOperacion.INVALID_MOVE;
             }
 
-            // 4) Aplicar movimiento y voltear fichas
+            //Aplicar movimiento y voltear fichas
             tablero.setFicha(fila, columna, this.turno);
             voltearFichas(fila, columna);
 
-            // 5) Cambiar turno
+            //Cambiar turno
             cambiarTurno();
-            return edu.ucr.controller.ResultadoOperacion.SUCCESS;
+            return ResultadoOperacion.SUCCESS;
         } catch (Exception ex) {
             // En lugar de swallow: registramos y devolvemos ERROR
             ex.printStackTrace(); // más adelante cambiar por Logger
-            return edu.ucr.controller.ResultadoOperacion.ERROR;
+            return ResultadoOperacion.ERROR;
         }
     }
 
@@ -166,11 +165,11 @@ public class JuegoController {
     }
 
     public Ficha getTurnoActual() {
+
         return this.turno;
     }
 
-    // Cambios añadidos: métodos que la vista necesita para ser dinámica
-    // Explicación en lenguaje cotidiano: estos métodos permiten que la interfaz pregunte
+    // estos métodos permiten que la interfaz pregunte
     // de qué tamaño es el tablero, quiénes son los jugadores y cuántas fichas tiene cada uno.
     public int getTamañoTablero() {
         // Si aún no existe tablero por alguna razón, devolvemos 8 por defecto
@@ -178,10 +177,12 @@ public class JuegoController {
     }
 
     public Jugador getJugadorNegro() {
+
         return this.jugadorNegro;
     }
 
     public Jugador getJugadorBlanco() {
+
         return this.jugadorBlanco;
     }
 
@@ -218,8 +219,7 @@ public class JuegoController {
         }
     }
 
-    // Nuevo: cargar una partida desde archivo y aplicar su estado al controlador
-    // En lenguaje cotidiano: esto lee una Partida del archivo y actualiza el tablero y jugadores en memoria
+    // esto lee una Partida del archivo y actualiza el tablero y jugadores en memoria
     public boolean cargarPartidaDesdeArchivo(String ruta) {
         if (partidaRepository == null) return false;
         Partida p = partidaRepository.cargarPartida(ruta);

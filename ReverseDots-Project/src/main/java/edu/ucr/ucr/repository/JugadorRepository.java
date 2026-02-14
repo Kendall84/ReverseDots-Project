@@ -1,6 +1,6 @@
 package edu.ucr.ucr.repository;
 
-import edu.ucr.model.Jugador;
+import edu.ucr.ucr.model.Jugador;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ public class JugadorRepository implements IJugadorRepository {
         if (encontrado == null) {
             listajugadores.add(jugador);
         }
-        // Nota: aquí también escribimos la lista completa al disco para persistir
         persistirAFichero();
     }
 
@@ -59,7 +58,6 @@ public class JugadorRepository implements IJugadorRepository {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(storageFile))) {
             Object obj = in.readObject();
             if (obj instanceof List) {
-                //noinspection unchecked
                 listajugadores = (List<Jugador>) obj;
             }
         } catch (IOException | ClassNotFoundException e) {

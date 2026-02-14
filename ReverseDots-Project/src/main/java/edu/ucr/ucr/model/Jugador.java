@@ -30,7 +30,7 @@ public class Jugador implements Serializable {
         this.partidasPerdida++;
     }
 
-    // GETTERS nuevos para estadísticas (lenguaje cotidiano): permiten leer cuántas partidas ganó/perdió
+    // getters que permiten leer cuántas partidas ganó/perdió
     public int getPartidasGanadas() { return partidasGanada; }
     public int getPartidasPerdidas() { return partidasPerdida; }
 

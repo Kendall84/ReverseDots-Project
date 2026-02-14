@@ -5,7 +5,7 @@ import edu.ucr.ucr.repository.IJugadorRepository;
 import edu.ucr.ucr.repository.IPartidaRepository;
 import edu.ucr.ucr.repository.JugadorRepository;
 import edu.ucr.ucr.repository.PartidaRepository;
-import edu.ucr.view.VentanaJuego;
+import edu.ucr.ucr.view.VentanaJuego;
 import javax.swing.SwingUtilities;
 
 public class Main {

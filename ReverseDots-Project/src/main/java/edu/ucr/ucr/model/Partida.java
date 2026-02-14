@@ -21,7 +21,6 @@ public class Partida implements Serializable {
         this.turno = Ficha.NEGRA;
     }
 
-    // Se usa para capturar el estado actual del juego
     public Partida(Tablero tablero, Jugador jugadorNegro, Jugador jugadorBlanco, Ficha turno) {
         this.tablero = tablero;
         this.jugadorNegro = jugadorNegro;

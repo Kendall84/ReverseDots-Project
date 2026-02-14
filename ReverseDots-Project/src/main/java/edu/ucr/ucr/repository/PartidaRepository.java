@@ -1,6 +1,6 @@
 package edu.ucr.ucr.repository;
 
-import edu.ucr.model.Partida;
+import edu.ucr.ucr.model.Partida;
 
 import java.io.*;
 
@@ -14,7 +14,7 @@ public class PartidaRepository implements IPartidaRepository {
     @Override
     public void guardarPartida(Partida partida, String rutaArchivo) {
 
-        // En lenguaje cotidiano: escribimos el objeto Partida en un archivo usando serialización Java.
+        // escribimos el objeto Partida en un archivo usando serialización Java.
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(rutaArchivo))) {
             out.writeObject(partida);
             System.out.println("Partida guardada en " + rutaArchivo);
@@ -27,7 +27,7 @@ public class PartidaRepository implements IPartidaRepository {
 
     @Override
     public Partida cargarPartida(String rutaArchivo) {
-        // En lenguaje cotidiano: leemos el objeto Partida desde el archivo y lo devolvemos
+        // leemos el objeto Partida desde el archivo y lo devolvemos
         File f = new File(rutaArchivo);
         if (!f.exists()) {
             System.out.println("Archivo no existe: " + rutaArchivo);

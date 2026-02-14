@@ -1,6 +1,6 @@
 package edu.ucr.ucr.repository;
 
-import edu.ucr.model.Jugador;
+import edu.ucr.ucr.model.Jugador;
 
 import java.util.List;
 

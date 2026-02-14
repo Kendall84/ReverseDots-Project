@@ -1,6 +1,7 @@
 package edu.ucr.ucr.repository;
 
-import edu.ucr.model.Partida;
+
+import edu.ucr.ucr.model.Partida;
 
 public interface IPartidaRepository {
 
