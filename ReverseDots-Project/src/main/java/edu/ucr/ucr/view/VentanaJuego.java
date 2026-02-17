@@ -80,7 +80,7 @@ public class VentanaJuego extends JFrame {
                     JOptionPane.showMessageDialog(this, "No se pudo cargar la partida.");
                 }
             }
-        });
+        });//Nelson
 
         JMenuItem guardar = new JMenuItem("Guardar partida");
         //abrimos JFileChooser para elegir donde guardar y pedimos al controlador guardar la partida
