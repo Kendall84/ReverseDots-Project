@@ -27,7 +27,7 @@ public class Jugador implements Serializable {
     }
     //si pierde se llama para aumentar partidas perdidas
     public void incrementarPerdidas() {
-        this.partidasPerdida++;
+        this.   partidasPerdida++;
     }
 
     // getters que permiten leer cuántas partidas ganó/perdió

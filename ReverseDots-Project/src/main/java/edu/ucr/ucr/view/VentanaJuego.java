@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class VentanaJuego extends JFrame {
+public class VentanaJuego  extends JFrame {
      private JuegoController controlador;
     // Iconos cacheados para no recrearlos en cada actualización
     private static final Icon ICON_NEGRO = new DiscIcon("NEGRO");
